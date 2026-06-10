@@ -1,0 +1,8 @@
+/* Popconfirm 按锕一行展示 */
+.ant-popconfirm-inner {
+  padding: 12px !important;
+}
+
+.ant-popconfirm-inner-content {
+  margin-bottom: 12px !important;
+}

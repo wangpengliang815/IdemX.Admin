@@ -1,0 +1,54 @@
+---
+alwaysApply: false
+description: "稳定符号速查 + 模块定位方式（不维护静态模块表，以仓库目录为准）。"
+---
+
+# 符号索引
+
+## 符号速查
+
+基础设施层符号，变更少；新模块开发仍以 `10` / `11` 模板为准。
+
+| 符号 | 用途 |
+|------|------|
+| `CustomApiResponse<T>` / `CustomApiResponse` | 后端统一响应 |
+| `ApiResponse<T>` | 前端响应类型 |
+| `BaseEntity` / `BaseResp` / `BasePageQueryReq` | 基类 |
+| `IBaseRepo<T>` / `IUnitOfWork` | 数据访问 |
+| `PredicateBuilder` / `TreeHelper.ToTree` | 工具 |
+| `IHttpContextUser` | 当前用户 |
+| `GlobalConstVars` | 后端成功/失败文案常量 |
+| `useEnumOptions` / `getEnumLabel` / `formatDate` / `hasValue` | 前端工具 |
+| `requestClient` / `postMultipartRequest` | 前端请求 |
+
+## 模块定位（以仓库为准，禁止背表）
+
+项目会持续增删模块，**不要依赖本文件里的静态映射表**。动手前先列目录确认真实路径。
+
+### 去哪找
+
+| 层 | 根路径 |
+|----|--------|
+| 后端 Controller | `src/backend/Jyd.Jcpt.Api/Controllers/` |
+| 后端 Service | `src/backend/Core.Application/` |
+| 后端 Entity/DTO | `src/backend/Core.Model/` |
+| 前端页面 | `src/frontend/jyd.jcpt.web/apps/web-antd/src/views/` |
+| 前端 API | `src/frontend/jyd.jcpt.web/apps/web-antd/src/api/` |
+
+### 命名规律（多数情况，有例外）
+
+- 前端 `views/`、`api/`：小写目录名（如 `contract`、`system`）
+- 后端 `Controllers/`、`Core.Application/`：PascalCase（如 `Contract`、`System`）
+- 前后端**不一定同名**：例如 `views/orders` 常对应 `api/order` 与后端 `Order` — 以实际目录和已有文件为准
+
+### 找锚文件
+
+1. 在 `views/<域>/` 或 `Controllers/<域>/` 下列出文件
+2. 选同模块里**最标准**的 CRUD 页作锚（系统模块优先 `system/user`；业务模块优先该域 `index.vue` + `*Controller.cs`）
+3. 对齐 `10-后端规范` / `11-前端规范` 模板写法
+
+### 例外目录
+
+- `views/_core`、`api/core`、`api/public`：登录、菜单、公共工具，非业务域
+- `Controllers/Public`：匿名/公共接口
+- 禁入：`src/frontend/jyd.jcpt.applet/`（见 `00-工作协议`）

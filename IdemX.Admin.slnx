@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/backend/">
+    <Project Path="src/backend/Core.Application/Core.Application.csproj" />
+    <Project Path="src/backend/Core.DataAccess/Core.DataAccess.csproj" />
+    <Project Path="src/backend/Core.Infrastructure/Core.Infrastructure.csproj" />
+    <Project Path="src/backend/Core.Model/Core.Model.csproj" />
+    <Project Path="src/backend/IdemX.Admin.Api/IdemX.Admin.Api.csproj" />
+  </Folder>
+</Solution>
