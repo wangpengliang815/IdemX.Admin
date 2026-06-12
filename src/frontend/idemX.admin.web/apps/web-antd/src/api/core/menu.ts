@@ -11,18 +11,8 @@ import { getMenusApi } from '#/api/profile';
  */
 function transformMenuData(backendMenus: SysMenuResp[], parentPath?: string, usedNames: Set<string> = new Set()): any[] {
   return backendMenus.map((m) => {
-    // 路径转换：将绝对路径转换为相对路径
-    let path = m.path;
-    if (path && path.startsWith('/') && parentPath) {
-      const parentPathWithoutSlash = parentPath.replace(/\/$/, '');
-      if (path.startsWith(`${parentPathWithoutSlash}/`)) {
-        path = path.slice(Math.max(0, parentPathWithoutSlash.length + 1));
-      } else if (path !== parentPathWithoutSlash) {
-        const pathParts = path.split('/').filter(Boolean);
-        const parentParts = parentPathWithoutSlash.split('/').filter(Boolean);
-        path = pathParts.length > parentParts.length ? pathParts.slice(parentParts.length).join('/') : pathParts[pathParts.length - 1] || path;
-      }
-    }
+    // 保持后端绝对路径，便于 Vben 在 Root 下正确注册可访问路由
+    const path = m.path;
 
     // 生成唯一的路由名称
     let routeName = m.name;

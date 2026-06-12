@@ -5,7 +5,6 @@ namespace Core.Application;
 /// </summary>
 public class AuthService(
     ILoginAuthService loginAuthService,
-    IRegisterAuthService registerAuthService,
     IAuthSmsService authSmsService) : IAuthService
 {
     /// <summary>
@@ -13,30 +12,6 @@ public class AuthService(
     /// </summary>
     public Task<CustomApiResponse<string>> LoginByPasswordAsync(LoginByPasswordReq request) =>
         loginAuthService.LoginByPasswordAsync(request);
-
-    /// <summary>
-    /// 手机号短信登录
-    /// </summary>
-    public Task<CustomApiResponse<string>> LoginByPhoneAsync(LoginByPhoneReq request) =>
-        loginAuthService.LoginByPhoneAsync(request);
-
-    /// <summary>
-    /// 用户注册
-    /// </summary>
-    public Task<CustomApiResponse> RegisterAsync(SysUserRegReq request) =>
-        registerAuthService.RegisterAsync(request);
-
-    /// <summary>
-    /// 检查手机号是否已注册
-    /// </summary>
-    public Task<CustomApiResponse<bool>> CheckPhoneExistsAsync(SmsSendCodeReq request) =>
-        authSmsService.CheckPhoneExistsAsync(request);
-
-    /// <summary>
-    /// 发送登录或注册短信验证码
-    /// </summary>
-    public Task<CustomApiResponse> SendSmsCodeAsync(SmsSendCodeReq request) =>
-        authSmsService.SendSmsCodeAsync(request);
 
     /// <summary>
     /// 发送找回密码短信验证码

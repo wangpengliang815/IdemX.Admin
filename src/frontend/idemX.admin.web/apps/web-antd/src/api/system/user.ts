@@ -19,7 +19,6 @@ export interface SysUserResp {
   phone?: string;
   email?: string;
   status: number;
-  userType: number;
   idCardNumber?: string;
   roles?: SysRoleResp[];
   createTime?: string;
@@ -31,7 +30,6 @@ export interface SysUserPageQueryReq {
   pageSize?: number;
   userName?: string;
   status?: number;
-  userType?: number;
   roleId?: string;
 }
 
@@ -50,11 +48,6 @@ export function toSingleRoleIds(roleId: string | undefined): string | undefined 
   return roleId;
 }
 
-export interface SysUserQueryReq {
-  userName: string;
-  phone: string;
-}
-
 export function getDefaultSysUserReq(): SysUserReq {
   return {
     userName: '',
@@ -71,10 +64,6 @@ export function getPageListApi(params?: SysUserPageQueryReq): Promise<ApiRespons
 
 export function searchBriefApi(keyword: string): Promise<ApiResponse<UserBriefResp[]>> {
   return requestClient.get('/sysUser/searchBrief', { params: { keyword } });
-}
-
-export function verifyExistApi(data: SysUserQueryReq): Promise<ApiResponse<void>> {
-  return requestClient.post('/sysUser/verifyExist', data);
 }
 
 export function getByIdApi(id: string): Promise<ApiResponse<SysUserResp>> {

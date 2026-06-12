@@ -25,14 +25,6 @@ public class SysUserController(ISysUserService sysUserService
         sysUserService.SearchBriefAsync(contextUser.Id, keyword);
 
     /// <summary>
-    /// 校验用户是否存在
-    /// </summary>
-    [HttpPost]
-    [Description("校验用户是否存在")]
-    public Task<CustomApiResponse> VerifyExist([FromBody] SysUserQueryReq request) =>
-        sysUserService.VerifyExistAsync(request);
-
-    /// <summary>
     /// 创建提交
     /// </summary>
     /// <param name="request">用户创建请求</param>

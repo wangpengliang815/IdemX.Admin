@@ -10,7 +10,6 @@ public class LoginAuthService(
     IHttpContextAccessor httpContextAccessor,
     IBaseRepo<SysRecordLogin> loginRecordRepo,
     IBaseRepo<SysRole> roleRepo,
-    ISmsCodeVerification smsCodeVerification,
     IHttpContextUser contextUser,
     ITairProvider tairProvider) : ILoginAuthService
 {
@@ -99,30 +98,6 @@ public class LoginAuthService(
         }
 
         await LogLoginAsync(request.UserName, LoginRecordType.登录成功, LoginRecordType.登录成功.ToString());
-
-        return CustomApiResponse<string>.Ok(GlobalConstVars.AuthSuccess, token);
-    }
-
-    /// <summary>
-    /// 手机号短信登录并签发 JWT
-    /// </summary>
-    public async Task<CustomApiResponse<string>> LoginByPhoneAsync(LoginByPhoneReq request)
-    {
-        var user = await userRepo.GetFirstAsync(p => p.Phone == request.PhoneNumber);
-        if (user is null)
-            return CustomApiResponse<string>.Fail(GlobalConstVars.PhoneNotRegistered);
-
-        if (!smsCodeVerification.Verify(request.PhoneNumber, request.SmsCode))
-            return CustomApiResponse<string>.Fail(GlobalConstVars.PhoneSmsInvalid);
-
-        var (success, message, token, _) = await BuildLoginResultAsync(user);
-        if (!success)
-        {
-            await LogLoginAsync(user.UserName, LoginRecordType.登录失败, message);
-            return CustomApiResponse<string>.Fail(message);
-        }
-
-        await LogLoginAsync(user.UserName, LoginRecordType.登录成功, LoginRecordType.登录成功.ToString());
 
         return CustomApiResponse<string>.Ok(GlobalConstVars.AuthSuccess, token);
     }

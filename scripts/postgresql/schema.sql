@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS public.sys_user (
     email               VARCHAR(200),
     sys_org_id          BIGINT,
     status              INTEGER         NOT NULL DEFAULT 0,
-    user_type           INTEGER         NOT NULL,
     id_card_number      VARCHAR(18),
     create_time         TIMESTAMP       NOT NULL,
     create_by           BIGINT,

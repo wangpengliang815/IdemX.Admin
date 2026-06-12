@@ -147,7 +147,6 @@ export function useGridFormSchema(onSearch?: () => void, stateOptions: EnumSelec
 export function useTableColumns(
   onActionClick: OnActionClick,
   sexTagOptions: EnumTagOption[],
-  userTypeTagOptions: EnumTagOption[],
 ): VxeTableGridOptions<SysUserResp>['columns'] {
   return [
     { align: 'left', field: 'userName', title: '用户名', width: 'auto' },
@@ -174,13 +173,6 @@ export function useTableColumns(
       cellRender: { name: 'CellTag', options: sexTagOptions },
     },
     { align: 'left', field: 'phone', title: '联系电话', width: 'auto' },
-    {
-      align: 'center',
-      field: 'userType',
-      title: '用户类型',
-      width: 'auto',
-      cellRender: { name: 'CellTag', options: userTypeTagOptions },
-    },
     {
       align: 'center',
       field: 'status',

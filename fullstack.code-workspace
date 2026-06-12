@@ -1,0 +1,53 @@
+{
+  "folders": [
+    {
+      "name": "Project Root",
+      "path": "."
+    },
+    {
+      "name": "Backend",
+      "path": "src/backend"
+    },
+    {
+      "name": "Web-Antd",
+      "path": "src/frontend/idemX.admin.web/apps/web-antd"
+    }
+    // {
+    //   "name": "Frontend Monorepo",
+    //   "path": "src/frontend/idemX.admin.web"
+    // },
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/bin": true,
+      "**/obj": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/bin": true,
+      "**/obj": true
+    },
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/**": true,
+      "**/dist/**": true,
+      "**/bin/**": true,
+      "**/obj/**": true
+    },
+    "eslint.workingDirectories": [
+      {
+        "directory": "src/frontend/idemX.admin.web",
+        "changeProcessCWD": true
+      }
+    ],
+    "prettier.requireConfig": false,
+    "prettier.workingDirectories": [
+      "src/frontend/idemX.admin.web"
+    ],
+    "typescript.tsdk": "src/frontend/idemX.admin.web/node_modules/typescript/lib"
+  }
+}

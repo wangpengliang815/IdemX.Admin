@@ -48,11 +48,6 @@ public class SysUserResp : BaseResp
     public UserStatus Status { get; set; }
 
     /// <summary>
-    /// 用户类型
-    /// </summary>
-    public UserType UserType { get; set; }
-
-    /// <summary>
     /// 身份证号
     /// </summary>
     public string IdCardNumber { get; set; }

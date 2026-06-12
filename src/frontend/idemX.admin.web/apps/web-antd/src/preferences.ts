@@ -13,7 +13,7 @@ export const overridesPreferences = defineOverridesPreferences({
     name: import.meta.env.VITE_APP_TITLE,
     locale: 'zh-CN', // 设置默认语言为中文
     accessMode: 'backend', // 使用后端动态路由模式
-    defaultHomePath: '/system/user', // 默认首页：系统用户管理（Init 种子菜单）
+    defaultHomePath: '/system/user', // 默认首页：用户管理（seed 菜单）
     enableRefreshToken: false, // 不使用 Token 刷新
     loginExpiredMode: 'modal', // Token 过期时弹出模态框提示
   },

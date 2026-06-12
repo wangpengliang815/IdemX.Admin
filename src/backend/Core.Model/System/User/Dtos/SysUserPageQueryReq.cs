@@ -13,11 +13,6 @@ public class SysUserPageQueryReq : BasePageQueryReq
     public UserStatus? Status { get; set; }
 
     /// <summary>
-    /// 按用户类型筛，可空
-    /// </summary>
-    public UserType? UserType { get; set; }
-
-    /// <summary>
     /// 按角色筛，可空
     /// </summary>
     public long? RoleId { get; set; }

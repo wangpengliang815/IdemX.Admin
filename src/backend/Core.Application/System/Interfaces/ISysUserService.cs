@@ -6,8 +6,6 @@ public interface ISysUserService
 
     Task<CustomApiResponse<List<UserBriefResp>>> SearchBriefAsync(long currentUserId, string keyword);
 
-    Task<CustomApiResponse> VerifyExistAsync(SysUserQueryReq request);
-
     Task<CustomApiResponse> CreateAsync(SysUserReq request);
 
     Task<CustomApiResponse<SysUserResp>> GetByIdAsync(long id);

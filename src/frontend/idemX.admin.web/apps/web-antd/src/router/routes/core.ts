@@ -27,7 +27,7 @@ const fallbackNotFoundRoute: RouteRecordRaw = {
 /**
  * 应用核心静态路由骨架
  * - Root：基础布局与默认首页
- * - Authentication：登录/注册等认证页面
+ * - Authentication：登录、找回密码等认证页面
  * 业务模块路由由后端菜单动态挂载
  */
 const coreRoutes: RouteRecordRaw[] = [
@@ -123,15 +123,6 @@ const coreRoutes: RouteRecordRaw[] = [
         meta: {
           hideInMenu: true,
           title: $t('page.auth.forgetPassword'),
-        },
-      },
-      {
-        name: 'Register',
-        path: 'register',
-        component: () => import('#/views/_core/authentication/register.vue'),
-        meta: {
-          hideInMenu: true,
-          title: $t('page.auth.register'),
         },
       },
     ],

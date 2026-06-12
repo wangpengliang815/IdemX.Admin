@@ -32,9 +32,6 @@ public class SysUserService(IBaseRepo<SysUser> userRepo
         if (request.Status.HasValue)
             where = where.And(p => p.Status == request.Status.Value);
 
-        if (request.UserType.HasValue)
-            where = where.And(p => p.UserType == request.UserType.Value);
-
         if (!string.IsNullOrEmpty(request.UserName))
             where = where.And(p => p.UserName.Contains(request.UserName));
 
@@ -96,8 +93,7 @@ public class SysUserService(IBaseRepo<SysUser> userRepo
 
         var entity = mapper.Map<SysUser>(request);
         entity.IdCardNumber = string.Empty;
-        entity.SysOrgId = null; // 组织机构能力预留，内部用户开通暂不绑定机构
-        entity.UserType = UserType.内部用户;
+        entity.SysOrgId = null; // 组织机构能力预留，开通暂不绑定机构
         entity.Status = UserStatus.正常;
 
         entity.Password = PasswordHelper.Hash(entity.Password);
@@ -269,27 +265,6 @@ public class SysUserService(IBaseRepo<SysUser> userRepo
         }).ToList();
 
         return CustomApiResponse<List<UserBriefResp>>.Ok(GlobalConstVars.GetDataSuccess, list);
-    }
-
-    /// <summary>
-    /// 按用户名、手机号校验平台用户是否存在
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
-    public async Task<CustomApiResponse> VerifyExistAsync(SysUserQueryReq request)
-    {
-        var userName = request.UserName?.Trim() ?? string.Empty;
-        var phone = request.Phone?.Trim() ?? string.Empty;
-
-        var exists = await userRepo.IsAnyAsync(p =>
-            !p.IsDeleted
-            && p.UserType == UserType.注册用户
-            && p.UserName == userName
-            && p.Phone == phone);
-
-        return exists
-            ? CustomApiResponse.Ok("平台用户信息校验通过")
-            : CustomApiResponse.Fail("该用户找不到请先注册平台账户");
     }
 
     /// <summary>

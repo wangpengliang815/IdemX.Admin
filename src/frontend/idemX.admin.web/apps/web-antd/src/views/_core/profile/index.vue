@@ -54,17 +54,9 @@ const roleTags = computed(() => {
     .slice(0, 6);
 });
 
-const userTypeLabel = computed(() => {
-  const userType = extendedUserInfo.value?.userType;
-  if (userType === 0) return '内部用户';
-  if (userType === 1) return '注册用户';
-  return '';
-});
-
 const QuickIconProfile = createIconifyIcon('mdi:account-outline');
 const QuickIconSecurity = createIconifyIcon('mdi:shield-check-outline');
 const QuickIconRelease = createIconifyIcon('mdi:clipboard-text-clock-outline');
-const IconUserType = createIconifyIcon('mdi:account-outline');
 const IconPhone = createIconifyIcon('mdi:phone-outline');
 const IconCamera = createIconifyIcon('mdi:camera-outline');
 const IconLoading = createIconifyIcon('mdi:loading');
@@ -244,13 +236,6 @@ function handleAvatarChange(info: any) {
               </Space>
 
               <div class="mt-1 flex flex-col gap-1">
-                <div v-if="userTypeLabel" style="color: #6b7280; font-size: 13px; line-height: 18px">
-                  <Space :size="6" align="center">
-                    <component :is="IconUserType" />
-                    <span>{{ userTypeLabel }}</span>
-                  </Space>
-                </div>
-
                 <div v-if="(extendedUserInfo as any)?.phone" style="color: #6b7280; font-size: 13px; line-height: 18px">
                   <Space :size="6" align="center">
                     <component :is="IconPhone" />

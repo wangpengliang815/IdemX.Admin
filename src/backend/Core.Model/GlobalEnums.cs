@@ -50,21 +50,3 @@ public enum UserStatus
     [Description("停用")]
     停用 = 1
 }
-
-/// <summary>
-/// 用户类型
-/// </summary>
-public enum UserType
-{
-    /// <summary>
-    /// 内部用户
-    /// </summary>
-    [Description("内部用户")]
-    内部用户 = 0,
-
-    /// <summary>
-    /// 注册用户
-    /// </summary>
-    [Description("注册用户")]
-    注册用户 = 1,
-}

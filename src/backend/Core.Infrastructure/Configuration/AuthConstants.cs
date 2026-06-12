@@ -8,10 +8,7 @@ public static class AuthConstants
     /// <summary>管理员角色编码（拥有此角色视为平台管理员，可看全部数据等）</summary>
     public const string AdminRoleCode = "admin";
 
-    /// <summary>注册用户默认角色编码（与 seed.sql 一致，自助注册后自动绑定）</summary>
-    public const string RegisteredUserRoleCode = "registered";
-
-    /// <summary>平台管理员账号用户名（系统内唯一，用于平台方收益绑定等场景）</summary>
+    /// <summary>平台管理员账号用户名</summary>
     public const string AdminUserName = "admin";
 
     /// <summary>JWT Claim：是否管理员，值为 "true"</summary>

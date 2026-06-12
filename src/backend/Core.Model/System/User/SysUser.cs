@@ -69,12 +69,6 @@ public class SysUser : BaseEntity
     public UserStatus Status { get; set; } = UserStatus.正常;
 
     /// <summary>
-    /// 用户类型，如注册或后台创建
-    /// </summary>
-    [Required]
-    public UserType UserType { get; set; }
-
-    /// <summary>
     /// 身份证号
     /// </summary>
     [MaxLength(18)]

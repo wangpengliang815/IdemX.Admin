@@ -3,12 +3,11 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SysRoleResp } from '#/api/system/role';
 import type { SysUserPageQueryReq, SysUserResp } from '#/api/system/user';
 
-import { computed, h, nextTick, onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
 
-import { Button, message, Segmented, Space, Switch, Tag } from 'ant-design-vue';
+import { Button, message, Space, Switch, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as roleApi from '#/api/system/role';
@@ -18,30 +17,10 @@ import { useEnumOptions } from '#/utils';
 import { useGridFormSchema, useTableColumns } from './data';
 import UserForm from './modules/form.vue';
 
-/** UserType.内部用户 */
-const USER_TYPE_INTERNAL = 0;
-/** UserType.注册用户 */
-const USER_TYPE_REGISTERED = 1;
-
-const listScope = ref<'all' | 'internal' | 'registered'>('all');
-
-function segmentLabel(icon: string, iconClass: string, title: string) {
-  return h('div', { class: 'flex min-h-9 items-center gap-2 px-0.5 py-0.5' }, [
-    h(IconifyIcon, { icon, class: `size-[20px] shrink-0 ${iconClass}` }),
-    h('span', { class: 'text-sm font-semibold leading-tight text-slate-800' }, title),
-  ]);
-}
-
-const listScopeSegmentOptions = computed(() => [
-  { value: 'all', label: segmentLabel('mdi:account-group-outline', 'text-blue-600', '全部用户') },
-  { value: 'internal', label: segmentLabel('mdi:account-tie-outline', 'text-indigo-600', '内部用户') },
-  { value: 'registered', label: segmentLabel('mdi:account-plus-outline', 'text-cyan-600', '注册用户') },
-]);
-
 const roleOptions = ref<SysRoleResp[]>([]);
 const stateOptions = useEnumOptions('UserStatus');
-const userTypeOptions = useEnumOptions('UserType', { 0: 'blue', 1: 'cyan' });
 const sexTagOptions = useEnumOptions('UserSexType', { 1: 'blue', 2: 'pink', 3: 'default' });
+
 async function loadRoleOptions() {
   const roleResult = await roleApi.getListApi();
   if (roleResult.code !== 0) {
@@ -63,7 +42,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     showCollapseButton: false,
   },
   gridOptions: {
-    columns: useTableColumns(onActionClick, sexTagOptions.value, userTypeOptions.value),
+    columns: useTableColumns(onActionClick, sexTagOptions.value),
     height: '100%',
     keepSource: true,
     headerRowHeight: 48,
@@ -82,8 +61,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
             userName: formValues?.userName as string | undefined,
             status: formValues?.status as number | undefined,
           };
-          if (listScope.value === 'internal') params.userType = USER_TYPE_INTERNAL;
-          else if (listScope.value === 'registered') params.userType = USER_TYPE_REGISTERED;
 
           const res = await userApi.getPageListApi(params);
           if (res.code !== 0) {
@@ -104,10 +81,6 @@ watch(roleOptions, () => {
   const schema = useGridFormSchema(() => gridApi.query(), stateOptions.value, roleOptions.value);
   if (schema) nextTick(() => gridApi.formApi?.updateSchema(schema));
 }, { deep: true });
-
-watch(listScope, () => {
-  gridApi.query();
-});
 
 async function onActionClick({ code, row }: { code: string; row: SysUserResp }) {
   switch (code) {
@@ -150,14 +123,10 @@ onMounted(async () => {
   <Page auto-content-height content-class="flex h-full min-h-0 flex-col overflow-hidden p-4">
     <FormDrawer @success="() => gridApi.query()" />
 
-    <div class="mb-3 shrink-0 rounded-xl border border-slate-200/90 bg-gradient-to-br from-slate-50/95 via-white to-blue-50/40 px-3 py-3 shadow-sm sm:px-4">
-      <Segmented v-model:value="listScope" class="w-fit max-w-full" size="large" :options="listScopeSegmentOptions" />
-    </div>
-
     <div class="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
       <Grid>
         <template #toolbar-tools>
-          <Button type="primary" @click="formDrawerApi.open()"> 内部账号开通 </Button>
+          <Button type="primary" @click="formDrawerApi.open()"> 新建用户 </Button>
         </template>
         <template #roles="{ row }">
           <span v-if="row.roles && row.roles.length > 0">
@@ -166,13 +135,14 @@ onMounted(async () => {
             </Tag>
           </span>
         </template>
-        <template #state="{ row }">
-          <Switch
-            :checked="row.status === 0"
-            checked-children="正常"
-            un-checked-children="停用"
-            @change="(checked: unknown) => void onStateChange(!!checked, row)"
-          />
+        <template #status="{ row }">
+          <Switch :checked="row.status === 0" @change="(checked) => onStateChange(!!checked, row)" />
+        </template>
+        <template #action="{ row }">
+          <Space>
+            <Button type="link" size="small" @click="onActionClick({ code: 'edit', row })">编辑</Button>
+            <Button type="link" size="small" danger @click="onActionClick({ code: 'delete', row })">删除</Button>
+          </Space>
         </template>
       </Grid>
     </div>
