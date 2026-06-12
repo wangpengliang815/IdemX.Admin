@@ -26,10 +26,10 @@ alwaysApply: false
 
 ## Controller 模板
 
-锚文件：`Controllers/Contract/ContractController.cs`、`Controllers/Company/CompanyConsigneeController.cs`
+锚文件：`Controllers/System/SysUserController.cs`、`Controllers/System/SysOrgController.cs`
 
 ```csharp
-namespace Jyd.Jcpt.Api.Controllers;
+namespace IdemX.Admin.Api.Controllers;
 
 [Description("模块描述")]
 public class XxxController(IXxxService xxxService) : AuthorizedControllerBase
@@ -63,7 +63,7 @@ public class XxxController(IXxxService xxxService) : AuthorizedControllerBase
 
 ## Service 模板
 
-锚文件：`Core.Application/Contract/Services/ContractService.cs`
+锚文件：`Core.Application/System/Services/SysUserService.cs`
 
 ```csharp
 namespace Core.Application;
@@ -120,24 +120,22 @@ public class XxxResp : BaseResp { ... }
 
 ## Entity 模板
 
-锚文件：`Core.Model/Contract/Contract/Contract.cs`
+锚文件：`Core.Model/System/Org/SysOrg.cs`
 
 ```csharp
-namespace Core.Model.Xxx;
+namespace Core.Model.System;
 
-[SugarTable("public.xxx")]
-public class Xxx : BaseEntity
+[SugarTable("public.sys_org")]
+public class SysOrg : BaseEntity
 {
+    [SugarColumn(IsNullable = true)]
+    public long? ParentId { get; set; }
+
     [Required]
     [MaxLength(200)]
     public string Name { get; set; }
 
-    // jsonb 字段
-    [SugarColumn(ColumnDataType = "jsonb", IsJson = true, IsNullable = true)]
-    public List<SomeConfig> ConfigItems { get; set; }
-
-    // decimal 字段
-    [SugarColumn(Length = 18, DecimalDigits = 2, IsNullable = true)]
-    public decimal? Price { get; set; }
+    [Required]
+    public int Sort { get; set; }
 }
 ```

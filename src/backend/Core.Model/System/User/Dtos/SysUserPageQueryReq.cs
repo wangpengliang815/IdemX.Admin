@@ -8,11 +8,6 @@ public class SysUserPageQueryReq : BasePageQueryReq
     public string UserName { get; set; }
 
     /// <summary>
-    /// 按实名模糊筛，可空
-    /// </summary>
-    public string RealName { get; set; }
-
-    /// <summary>
     /// 按状态筛，可空
     /// </summary>
     public UserStatus? Status { get; set; }

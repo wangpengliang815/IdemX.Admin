@@ -1,6 +1,6 @@
 ---
 description: "前端编码规范：API/列表页/data.ts/Drawer 模板与硬约束。"
-globs: src/frontend/jyd.jcpt.web/**/*.{vue,ts,tsx}
+globs: src/frontend/idemX.admin.web/**/*.{vue,ts,tsx}
 alwaysApply: false
 ---
 
@@ -18,7 +18,7 @@ alwaysApply: false
 
 ## API 文件模板
 
-锚文件：`api/system/user.ts`、`api/contract/contract.ts`
+锚文件：`api/system/user.ts`
 
 ```typescript
 import type { ApiResponse } from '#/api/request';

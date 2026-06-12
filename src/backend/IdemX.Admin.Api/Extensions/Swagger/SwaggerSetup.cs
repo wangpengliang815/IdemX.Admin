@@ -3,7 +3,7 @@ namespace IdemX.Admin.Api.Extensions
     public static class SwaggerSetup
     {
         // 常量定义
-        private const string API_NAME = "Jyd.API 后端接口";
+        private const string API_NAME = "IdemX.Admin";
         private const string SUPPORT_EMAIL = "15101587969@163.com";
         private const string API_URL = "http://localhost:5000";
         private const string DOC_FILE = "IdemX.Admin.Api.xml";

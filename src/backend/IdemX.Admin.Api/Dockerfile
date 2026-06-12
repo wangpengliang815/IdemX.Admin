@@ -24,4 +24,4 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
 WORKDIR /app
 EXPOSE 5000
 COPY . .
-ENTRYPOINT ["dotnet", "Jyd.Jcpt.Api.dll"]
+ENTRYPOINT ["dotnet", "IdemX.Admin.Api.dll"]

@@ -20,13 +20,14 @@
 
 ```
 IdemX.Admin/
+├── scripts/postgresql/             # 建表 SQL（schema.sql）
 ├── src/backend/                    # 后端（类库层仍叫 Core.*）
 │   ├── Core.Model                  # 实体、DTO、枚举
 │   ├── Core.Infrastructure         # 基础设施（Options、阿里云 SMS/OSS 等）
 │   ├── Core.DataAccess             # 仓储
 │   ├── Core.Application            # 业务服务（System + Auth/Init/Tools/UserProfile）
 │   └── IdemX.Admin.Api             # API 入口、Controllers、Startup
-├── src/frontend/jyd.jcpt.web/      # Vben monorepo（目录名待后续重命名为 web）
+├── src/frontend/idemX.admin.web/   # Vben monorepo
 │   └── apps/web-antd/              # 实际运行的 Ant Design 管理端
 └── .cursor/rules/                  # Cursor 开发规范
 ```
@@ -64,13 +65,23 @@ IdemX.Admin/
 - Node.js 20+、pnpm 9+
 - PostgreSQL 14+（本地）
 
-### 1. 创建数据库
+### 1. 创建数据库并建表
 
 ```sql
 CREATE DATABASE "IdemX.Admin.db";
 ```
 
 > 库名含 `.`，PostgreSQL 里需加双引号。
+
+在空库中执行建表与种子脚本（字段与 `Core.Model` 实体一致）：
+
+```bash
+psql -U postgres -d "IdemX.Admin.db" -f scripts/postgresql/schema.sql
+psql -U postgres -d "IdemX.Admin.db" -f scripts/postgresql/seed.sql
+```
+
+> 增删改实体后，请同步更新 `scripts/postgresql/schema.sql`（骨架不做自动迁移）。  
+> 种子脚本写入默认管理员（`admin` / `123456`）、角色、系统菜单；仅用于空库首次执行。
 
 ### 2. 配置连接串
 
@@ -85,8 +96,6 @@ CREATE DATABASE "IdemX.Admin.db";
 
 按需填写 `AliyunOptions.Sms` / `Oss`（不配短信时，注册与短信登录不可用，密码登录仍可用）。
 
-默认种子管理员见 `InitConfig` 节（默认 `admin` / `123456`）。
-
 ### 3. 启动后端
 
 ```bash
@@ -97,12 +106,10 @@ dotnet run
 - API：`http://localhost:5000`
 - Swagger：`http://localhost:5000/swagger`
 
-> 表结构需已存在于库中（SqlSugar 按实体映射，启动时不自动建表）。新库请先导入/迁移 schema，再调用 Init 接口写入种子数据。
-
 ### 4. 启动前端
 
 ```bash
-cd src/frontend/jyd.jcpt.web
+cd src/frontend/idemX.admin.web
 pnpm install
 pnpm dev:antd
 ```
@@ -110,14 +117,15 @@ pnpm dev:antd
 - 前端：`http://localhost:5666`（见 `apps/web-antd/.env.development`）
 - 接口代理：`VITE_GLOB_API_URL=http://localhost:5000/api/`
 
-### 5. 冷启动（可选）
+### 5. 省市区数据（可选）
 
-管理员登录后，在 Swagger 或 Postman 调用：
+表结构与种子就绪、后端已启动后，用管理员登录，在 Swagger 调用：
 
 | 接口 | 说明 |
 |---|---|
-| `POST /api/Init/InitProject` | 创建默认管理员、角色、系统菜单 |
-| `POST /api/Init/InitAreas` | 导入省市区数据 |
+| `POST /api/Init/InitAreas` | 从 `china_areas_data.json` 全量导入省市区 |
+
+默认管理员见 `scripts/postgresql/seed.sql`（`admin` / `123456`）。
 
 ---
 
@@ -126,7 +134,7 @@ pnpm dev:antd
 按现有 **system/user** 模式复制即可，不必改框架层：
 
 1. **后端**：`Core.Model` 加实体/DTO → `Core.Application` 加 Service → `IdemX.Admin.Api/Controllers` 加 Controller
-2. **前端**：`src/api/` 加接口 → `src/views/` 加页面 → 后台菜单配置路由（或 `InitService` 种子菜单里加项）
+2. **前端**：`src/api/` 加接口 → `src/views/` 加页面 → 后台菜单配置路由（或 `seed.sql` 里加菜单项）
 
 框架层（Auth、RBAC、个人中心）尽量不动；业务逻辑放在各自模块目录。
 
@@ -138,7 +146,7 @@ pnpm dev:antd
 |---|---|
 | **IdemX.Admin** | 产品 / 仓库 / API 品牌名 |
 | **Core.*** | 后端类库命名空间，历史沿用，与产品名无关 |
-| **jyd.jcpt.web** | 前端 monorepo 目录，待重命名为 `web`，不影响使用 |
+| **idemX.admin.web** | 前端 Vben monorepo 目录 |
 
 ---
 

@@ -13,11 +13,6 @@ public class SysUserResp : BaseResp
     public string NickName { get; set; }
 
     /// <summary>
-    /// 实名
-    /// </summary>
-    public string RealName { get; set; }
-
-    /// <summary>
     /// 头像
     /// </summary>
     public string Avatar { get; set; }
@@ -36,11 +31,6 @@ public class SysUserResp : BaseResp
     /// 邮箱
     /// </summary>
     public string Email { get; set; }
-
-    /// <summary>
-    /// 微信号
-    /// </summary>
-    public string WechatNo { get; set; }
 
     /// <summary>
     /// 归属机构主键

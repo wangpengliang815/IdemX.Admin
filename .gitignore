@@ -368,15 +368,5 @@ node_modules/
 .project
 unpackage/
 .DS_Store
-/CoreCms.Net.Web.Admin/wwwroot/upload/
 *.dll
-/ShengTangYun.ERP/wwwroot/upload/avatars/1/avatar2023627144809.jpg
-/src/backend/ShengTangYun.Api/wwwroot/static/delistfiles
-/src/backend/ShengTangYun.Api/wwwroot/static/depackagefiles
 
-# 微信小程序开发者工具本地工程配置（含 appid、本机模拟器设置等，勿入库）
-/project.config.json
-/project.private.config.json
-
-# 一次性迁移工具本地连接串
-/src/backend/Jyd.Jcpt.Migration.Tool/appsettings.local.json

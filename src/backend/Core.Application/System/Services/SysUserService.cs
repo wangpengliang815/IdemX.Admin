@@ -38,9 +38,6 @@ public class SysUserService(IBaseRepo<SysUser> userRepo
         if (!string.IsNullOrEmpty(request.UserName))
             where = where.And(p => p.UserName.Contains(request.UserName));
 
-        if (!string.IsNullOrEmpty(request.RealName))
-            where = where.And(p => p.RealName.Contains(request.RealName));
-
         var list = await userRepo.GetPageAsync(where, p => p.Id, OrderByType.Desc, request.Page, request.PageSize);
 
         if (!list.Any())
@@ -163,7 +160,6 @@ public class SysUserService(IBaseRepo<SysUser> userRepo
         entity.Sex = request.Sex;
         entity.UserName = request.UserName;
         entity.Phone = request.Phone;
-        entity.RealName = request.RealName;
         var passwordChanged = !string.IsNullOrEmpty(request.Password);
         entity.Password = passwordChanged ? PasswordHelper.Hash(request.Password) : entity.Password;
 
@@ -248,7 +244,7 @@ public class SysUserService(IBaseRepo<SysUser> userRepo
     }
 
     /// <summary>
-    /// 按关键字搜索用户简要信息（账号、手机号、真实姓名，排除当前用户）
+    /// 按关键字搜索用户简要信息（账号、手机号、昵称，排除当前用户）
     /// </summary>
     /// <param name="currentUserId"></param>
     /// <param name="keyword"></param>
@@ -260,7 +256,7 @@ public class SysUserService(IBaseRepo<SysUser> userRepo
 
         var kw = keyword.Trim();
         var rows = await userRepo.GetListAsync(
-            u => u.Id != currentUserId && (u.UserName.Contains(kw) || u.Phone.Contains(kw) || u.RealName.Contains(kw)),
+            u => u.Id != currentUserId && (u.UserName.Contains(kw) || u.Phone.Contains(kw) || u.NickName.Contains(kw)),
             u => u.CreateTime,
             OrderByType.Desc);
 
@@ -269,7 +265,6 @@ public class SysUserService(IBaseRepo<SysUser> userRepo
             Id = u.Id.ToString(),
             UserName = u.UserName,
             NickName = u.NickName,
-            RealName = u.RealName,
             Phone = string.IsNullOrEmpty(u.Phone) || u.Phone.Length < 7 ? u.Phone : $"{u.Phone[..3]}****{u.Phone[^4..]}"
         }).ToList();
 
@@ -277,19 +272,19 @@ public class SysUserService(IBaseRepo<SysUser> userRepo
     }
 
     /// <summary>
-    /// 按真实姓名、手机号校验平台用户是否存在
+    /// 按用户名、手机号校验平台用户是否存在
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
     public async Task<CustomApiResponse> VerifyExistAsync(SysUserQueryReq request)
     {
-        var realName = request.RealName?.Trim() ?? string.Empty;
+        var userName = request.UserName?.Trim() ?? string.Empty;
         var phone = request.Phone?.Trim() ?? string.Empty;
 
         var exists = await userRepo.IsAnyAsync(p =>
             !p.IsDeleted
             && p.UserType == UserType.注册用户
-            && p.RealName == realName
+            && p.UserName == userName
             && p.Phone == phone);
 
         return exists

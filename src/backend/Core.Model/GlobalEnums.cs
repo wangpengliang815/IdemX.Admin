@@ -1,14 +1,5 @@
 namespace Core.Model;
 
-public enum SysNoticeType
-{
-    [Description("消息发送到所有")]
-    ToAll = 100,
-
-    [Description("消息发送到组")]
-    ToGroup = 20,
-}
-
 /// <summary>
 /// 登录日志记录类型
 /// </summary>

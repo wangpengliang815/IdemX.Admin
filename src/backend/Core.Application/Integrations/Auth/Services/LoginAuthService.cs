@@ -177,7 +177,7 @@ public class LoginAuthService(
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.GivenName, user.RealName),
+            new(ClaimTypes.GivenName, string.IsNullOrWhiteSpace(user.NickName) ? user.UserName : user.NickName),
             new(ClaimTypes.Name, user.UserName),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N"))
         };

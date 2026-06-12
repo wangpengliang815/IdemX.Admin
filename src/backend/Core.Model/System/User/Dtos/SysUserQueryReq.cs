@@ -3,14 +3,14 @@ namespace Core.Model.System;
 public class SysUserQueryReq
 {
     /// <summary>
-    /// 真实姓名（与系统用户管理一致）
+    /// 登录账号
     /// </summary>
     [Required]
     [StringLength(50)]
-    public string RealName { get; set; }
+    public string UserName { get; set; }
 
     /// <summary>
-    /// 手机号（与系统用户管理一致）
+    /// 手机号
     /// </summary>
     [Required]
     [StringLength(50)]

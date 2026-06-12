@@ -29,13 +29,6 @@ public class SysUserReq
     public string Phone { get; set; }
 
     /// <summary>
-    /// 实名
-    /// </summary>
-    [Required]
-    [StringLength(50)]
-    public string RealName { get; set; }
-
-    /// <summary>
     /// 绑定角色 id 列表序列化串，格式由前后端约定
     /// </summary>
     [StringLength(500)]

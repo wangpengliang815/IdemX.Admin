@@ -18,11 +18,6 @@ public class UserBriefResp
     public string NickName { get; set; }
 
     /// <summary>
-    /// 实名
-    /// </summary>
-    public string RealName { get; set; }
-
-    /// <summary>
     /// 手机号，已脱敏
     /// </summary>
     public string Phone { get; set; }

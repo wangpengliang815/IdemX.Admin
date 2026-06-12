@@ -19,8 +19,6 @@ namespace IdemX.Admin.Api
         {
             // Options配置绑定
             services.Configure<AliyunOptions>(Configuration.GetSection("AliyunOptions"));
-            services.Configure<InitConfigOptions>(Configuration.GetSection("InitConfig"));
-            services.Configure<RegistrationOptions>(Configuration.GetSection("Registration"));
             services.Configure<HangfireOptions>(Configuration.GetSection("Hangfire"));
 
             // 基础设施服务注册

@@ -27,13 +27,6 @@ public class SysUser : BaseEntity
     public string NickName { get; set; }
 
     /// <summary>
-    /// 实名
-    /// </summary>
-    [Required]
-    [MaxLength(50)]
-    public string RealName { get; set; }
-
-    /// <summary>
     /// 头像 URL 或路径
     /// </summary>
     [MaxLength(200)]
@@ -57,12 +50,6 @@ public class SysUser : BaseEntity
     /// </summary>
     [MaxLength(200)]
     public string Email { get; set; }
-
-    /// <summary>
-    /// 微信号
-    /// </summary>
-    [MaxLength(100)]
-    public string WechatNo { get; set; }
 
     /// <summary>
     /// 归属机构主键，null 表示未挂靠

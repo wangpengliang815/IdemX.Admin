@@ -16,9 +16,4 @@ public class SysUserEditInfoReq
     /// 邮箱
     /// </summary>
     public string Email { get; set; }
-
-    /// <summary>
-    /// 微信号
-    /// </summary>
-    public string WechatNo { get; set; }
 }

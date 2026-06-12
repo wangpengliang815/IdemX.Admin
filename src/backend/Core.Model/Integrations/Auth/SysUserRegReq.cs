@@ -24,12 +24,6 @@ public class SysUserRegReq
     public string Phone { get; set; }
 
     /// <summary>
-    /// 真实姓名
-    /// </summary>
-    [Required]
-    public string RealName { get; set; }
-
-    /// <summary>
     /// 短信验证码
     /// </summary>
     [Required]

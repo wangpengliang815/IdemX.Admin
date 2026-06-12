@@ -85,7 +85,7 @@ public class UserProfileInfoService(
     }
 
     /// <summary>
-    /// 编辑用户基本资料（昵称、性别、邮箱、微信号等）
+    /// 编辑用户基本资料（昵称、性别、邮箱等）
     /// </summary>
     public async Task<CustomApiResponse<bool>> EditUserInfoAsync(long id, SysUserEditInfoReq request)
     {
@@ -99,7 +99,6 @@ public class UserProfileInfoService(
         userEntity.NickName = request.NickName;
         userEntity.Sex = (UserSexType)request.Sex;
         userEntity.Email = request.Email;
-        userEntity.WechatNo = request.WechatNo;
 
         var result = await userRepo.EditAsync(userEntity);
         return result

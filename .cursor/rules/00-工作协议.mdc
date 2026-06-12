@@ -14,7 +14,6 @@ description: "协作基线：怎么干活、禁入目录、过度设计红线。
 
 ## 禁入目录
 
-- `src/frontend/jyd.jcpt.applet/`（小程序）
 - `tests/`（我要求时才动）
 
 ## 过度设计红线

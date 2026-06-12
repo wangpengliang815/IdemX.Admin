@@ -29,17 +29,17 @@ description: "稳定符号速查 + 模块定位方式（不维护静态模块表
 
 | 层 | 根路径 |
 |----|--------|
-| 后端 Controller | `src/backend/Jyd.Jcpt.Api/Controllers/` |
+| 后端 Controller | `src/backend/IdemX.Admin.Api/Controllers/` |
 | 后端 Service | `src/backend/Core.Application/` |
 | 后端 Entity/DTO | `src/backend/Core.Model/` |
-| 前端页面 | `src/frontend/jyd.jcpt.web/apps/web-antd/src/views/` |
-| 前端 API | `src/frontend/jyd.jcpt.web/apps/web-antd/src/api/` |
+| 前端页面 | `src/frontend/idemX.admin.web/apps/web-antd/src/views/` |
+| 前端 API | `src/frontend/idemX.admin.web/apps/web-antd/src/api/` |
 
 ### 命名规律（多数情况，有例外）
 
-- 前端 `views/`、`api/`：小写目录名（如 `contract`、`system`）
-- 后端 `Controllers/`、`Core.Application/`：PascalCase（如 `Contract`、`System`）
-- 前后端**不一定同名**：例如 `views/orders` 常对应 `api/order` 与后端 `Order` — 以实际目录和已有文件为准
+- 前端 `views/`、`api/`：小写目录名（如 `system`）
+- 后端 `Controllers/`、`Core.Application/`：PascalCase（如 `System`）
+- 前后端**不一定同名**：以实际目录和已有文件为准
 
 ### 找锚文件
 
@@ -51,4 +51,3 @@ description: "稳定符号速查 + 模块定位方式（不维护静态模块表
 
 - `views/_core`、`api/core`、`api/public`：登录、菜单、公共工具，非业务域
 - `Controllers/Public`：匿名/公共接口
-- 禁入：`src/frontend/jyd.jcpt.applet/`（见 `00-工作协议`）

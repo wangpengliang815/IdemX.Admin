@@ -3,28 +3,22 @@ using System.Text.Json.Nodes;
 namespace Core.Application;
 
 /// <summary>
-/// 运维冷启动：省市区、最小系统菜单
+/// 运维冷启动：省市区
 /// </summary>
 public class InitService(
     IBaseRepo<SysArea> sysAreaRepo,
     IBaseRepo<SysUser> userRepo,
-    IBaseRepo<SysRole> roleRepo,
-    IBaseRepo<SysUserRole> userRoleRepo,
-    IBaseRepo<SysMenu> menuRepo,
-    IBaseRepo<SysRoleMenu> roleMenuRepo,
-    IOptions<InitConfigOptions> initConfigOptions,
     IHttpContextUser contextUser,
     IUnitOfWork unitOfWork) : IInitService
 {
-    readonly InitConfigOptions initConfig = initConfigOptions.Value;
-
     /// <summary>
     /// 从 china_areas_data.json 全量重建省市区
     /// </summary>
     public async Task<CustomApiResponse<object>> InitAreasAsync(string contentRootPath)
     {
-        if (!contextUser.IsAdmin)
-            return CustomApiResponse<object>.Fail(GlobalConstVars.ViewPermissionDenied);
+        var denied = await EnsureInitAdminAsync();
+        if (denied is not null)
+            return denied;
 
         var jsonFilePath = Path.Combine(contentRootPath, "Utilities", "china_areas_data.json");
         if (!File.Exists(jsonFilePath))
@@ -90,186 +84,13 @@ public class InitService(
     }
 
     /// <summary>
-    /// 默认管理员、admin 角色与最小系统菜单（幂等，可重复执行）
+    /// 库中已有用户时仅管理员可执行 InitAreas
     /// </summary>
-    public async Task<CustomApiResponse<object>> InitProjectAsync()
+    async Task<CustomApiResponse<object>?> EnsureInitAdminAsync()
     {
-        if (!contextUser.IsAdmin)
+        if (await userRepo.IsAnyAsync(_ => true) && !contextUser.IsAdmin)
             return CustomApiResponse<object>.Fail(GlobalConstVars.ViewPermissionDenied);
 
-        var adminConfig = GetAdminConfig();
-        if (adminConfig is null)
-            return CustomApiResponse<object>.Fail("管理员基础信息配置不完整");
-
-        await unitOfWork.BeginTranAsync();
-        try
-        {
-            var adminRole = await roleRepo.GetFirstAsync(p => p.RoleCode == adminConfig.AdminRole.RoleCode);
-            if (adminRole is null)
-            {
-                adminRole = new SysRole
-                {
-                    RoleName = adminConfig.AdminRole.RoleName,
-                    RoleCode = adminConfig.AdminRole.RoleCode,
-                    CreateTime = DateTime.Now
-                };
-
-                var roleId = await roleRepo.InsertAsync(adminRole);
-                adminRole.Id = roleId;
-            }
-
-            var adminUser = await userRepo.GetFirstAsync(p => p.UserName == adminConfig.AdminUser.UserName);
-            if (adminUser is null)
-            {
-                var now = DateTime.Now;
-                adminUser = new SysUser
-                {
-                    UserName = adminConfig.AdminUser.UserName,
-                    Password = PasswordHelper.Hash(adminConfig.AdminUser.Password),
-                    RealName = adminConfig.AdminUser.RealName,
-                    Sex = UserSexType.男,
-                    Phone = adminConfig.AdminUser.Phone,
-                    Email = adminConfig.AdminUser.Email ?? "",
-                    UserType = UserType.内部用户,
-                    Status = UserStatus.正常,
-                    CreateTime = now
-                };
-
-                var userId = await userRepo.InsertAsync(adminUser);
-                adminUser.Id = userId;
-            }
-
-            var adminUserRole = await userRoleRepo.GetFirstAsync(p =>
-                p.UserId == adminUser.Id && p.RoleId == adminRole.Id);
-            if (adminUserRole is null)
-            {
-                await userRoleRepo.InsertAsync(new SysUserRole
-                {
-                    UserId = adminUser.Id,
-                    RoleId = adminRole.Id,
-                    CreateTime = DateTime.Now
-                });
-            }
-
-            var systemId = await EnsureMenuAsync(
-                name: "system",
-                path: "/system",
-                component: "/system/index",
-                title: "后台管理",
-                icon: "mdi:cog",
-                parentId: null,
-                sort: 999);
-
-            var systemMenuId = await EnsureMenuAsync(
-                name: "system_menu",
-                path: "/system/menu",
-                component: "/system/menu/index",
-                title: "菜单管理",
-                icon: "mdi:menu",
-                parentId: systemId,
-                sort: 1);
-
-            var systemRoleMenuId = await EnsureMenuAsync(
-                name: "system_role",
-                path: "/system/role",
-                component: "/system/role/index",
-                title: "角色管理",
-                icon: "mdi:filter-cog",
-                parentId: systemId,
-                sort: 2);
-
-            await EnsureRoleMenuAsync(adminRole.Id, systemId);
-            await EnsureRoleMenuAsync(adminRole.Id, systemMenuId);
-            await EnsureRoleMenuAsync(adminRole.Id, systemRoleMenuId);
-
-            await unitOfWork.CommitTranAsync();
-        }
-        catch
-        {
-            await unitOfWork.RollbackTranAsync();
-            throw;
-        }
-
-        return CustomApiResponse<object>.Ok("项目种子数据初始化完成", null, 0);
-    }
-
-    InitConfigOptions GetAdminConfig()
-    {
-        var user = initConfig.AdminUser;
-        var role = initConfig.AdminRole;
-
-        if (string.IsNullOrWhiteSpace(user.UserName)
-            || string.IsNullOrWhiteSpace(user.Password)
-            || string.IsNullOrWhiteSpace(user.RealName)
-            || string.IsNullOrWhiteSpace(user.Phone)
-            || string.IsNullOrWhiteSpace(role.RoleName)
-            || string.IsNullOrWhiteSpace(role.RoleCode))
-            return null;
-
-        return initConfig;
-    }
-
-    async Task<long> EnsureMenuAsync(
-        string name,
-        string path,
-        string component,
-        string title,
-        string icon,
-        long? parentId,
-        int sort,
-        int menuType = 0)
-    {
-        var menu = await menuRepo.GetFirstAsync(p =>
-            p.ParentId == parentId && (p.Name == name || p.Path == path));
-        if (menu is null)
-        {
-            menu = new SysMenu
-            {
-                ParentId = parentId,
-                Name = name,
-                Path = path,
-                Component = component,
-                Redirect = null,
-                Title = title,
-                Icon = icon,
-                Sort = sort,
-                Authority = null,
-                Roles = null,
-                AffixTab = false,
-                IsExternal = false,
-                ExternalUrl = null,
-                IframeUrl = null,
-                KeepAlive = true,
-                MenuType = menuType,
-                Badge = null,
-                BadgeType = null,
-                BadgeVariants = null,
-                ActiveMenu = null,
-                BreadcrumbParentIcon = null,
-                Link = null,
-                Status = 1,
-                CreateTime = DateTime.Now
-            };
-
-            var id = await menuRepo.InsertAsync(menu);
-            return id;
-        }
-
-        return menu.Id;
-    }
-
-    async Task EnsureRoleMenuAsync(long roleId, long menuId)
-    {
-        var exists = await roleMenuRepo.GetFirstAsync(p =>
-            p.RoleId == roleId && p.MenuId == menuId);
-        if (exists is not null)
-            return;
-
-        await roleMenuRepo.InsertAsync(new SysRoleMenu
-        {
-            RoleId = roleId,
-            MenuId = menuId,
-            CreateTime = DateTime.Now
-        });
+        return null;
     }
 }

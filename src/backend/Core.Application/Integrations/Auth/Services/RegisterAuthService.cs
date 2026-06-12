@@ -8,7 +8,6 @@ public class RegisterAuthService(
     IBaseRepo<SysUserRole> userRoleRepo,
     IBaseRepo<SysRole> roleRepo,
     ISmsCodeVerification smsCodeVerification,
-    IOptionsMonitor<RegistrationOptions> registrationOptions,
     IUnitOfWork unitOfWork) : IRegisterAuthService
 {
     /// <summary>
@@ -34,7 +33,6 @@ public class RegisterAuthService(
             UserName = request.UserName,
             Password = password,
             Phone = request.Phone,
-            RealName = request.RealName,
             Sex = UserSexType.未知,
             UserType = UserType.注册用户,
             Status = UserStatus.正常
@@ -50,22 +48,18 @@ public class RegisterAuthService(
                 return CustomApiResponse.Fail(GlobalConstVars.RegFailed);
             }
 
-            var defaultRoleCode = registrationOptions.CurrentValue.DefaultRoleCode?.Trim();
-            if (!string.IsNullOrWhiteSpace(defaultRoleCode))
+            var defaultRole = await roleRepo.GetFirstAsync(p => p.RoleCode == AuthConstants.RegisteredUserRoleCode);
+            if (defaultRole is null)
             {
-                var defaultRole = await roleRepo.GetFirstAsync(p => p.RoleCode == defaultRoleCode);
-                if (defaultRole is null)
-                {
-                    await unitOfWork.RollbackTranAsync();
-                    return CustomApiResponse.Fail("系统未配置默认角色，请联系管理员");
-                }
-
-                await userRoleRepo.InsertAsync(new SysUserRole
-                {
-                    UserId = userId,
-                    RoleId = defaultRole.Id
-                });
+                await unitOfWork.RollbackTranAsync();
+                return CustomApiResponse.Fail("系统未配置默认角色，请联系管理员");
             }
+
+            await userRoleRepo.InsertAsync(new SysUserRole
+            {
+                UserId = userId,
+                RoleId = defaultRole.Id
+            });
 
             await unitOfWork.CommitTranAsync();
         }
